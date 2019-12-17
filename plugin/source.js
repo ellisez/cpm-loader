@@ -105,8 +105,7 @@ module.exports=function (file, {directive, parentConfig}) {
             return;
         }
         let code=`/// Beginning of ${rawUrl}\n${content}\n/// Ending of ${rawUrl}`;
-        const result=compiler(url, code, config);
-        code=result.code;
+
         // rangeMapping
         parentConfig.rangeMapping=parentConfig.rangeMapping||[];
         parentConfig.rangeMapping.push({
@@ -118,7 +117,10 @@ module.exports=function (file, {directive, parentConfig}) {
                 start: directive.start,
                 end: directive.start+code.length
             }
-        })
+        });
+
+        const result=compiler(url, code, config);
+        code=result.code;
 
         return code;
     }
