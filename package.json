@@ -1,0 +1,12 @@
+{
+  "name": "@cpm/loader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "babel-core": "^6.26.3",
+    "vue-template-compiler": "^2.5.2"
+  }
+}
