@@ -2,6 +2,8 @@ const fs=require('fs');
 const path=require('path');
 const babel=require('babel-core');
 
+const cwd=process.env.CPM_DIRECTOR || process.cwd();
+
 function excludeRange(content) {
     let allRange=[];
 
@@ -237,7 +239,7 @@ function relativePath(url, baseurl) {
     if (baseurl) {
         dirname=path.dirname(baseurl);
     } else {
-        dirname=process.cwd();
+        dirname=cwd;
     }
     return path.relative(dirname, url).replace(/\\/g, '/');
 }
@@ -247,14 +249,14 @@ function relativePath(url, baseurl) {
     if (baseurl) {
         dirname=path.dirname(baseurl);
     } else {
-        dirname=process.cwd();
+        dirname=cwd;
     }
     return path.relative(dirname, url).replace(/\\/g, '/');
 }
 
 function formatePath(url) {
     if (url) {
-        return path.relative(process.cwd(), url).replace(/\\/g, '/');
+        return path.relative(cwd, url).replace(/\\/g, '/');
     }
     return null;
 }
@@ -269,7 +271,7 @@ function aliasPath(url, config) {
             if (result) {
                 url=url.substring(result[0].length);
                 url=path.resolve(alias[key], url);
-                url=path.relative(process.cwd(), url);
+                url=path.relative(cwd, url);
                 return url;
             }
         }
@@ -281,7 +283,7 @@ function aliasPath(url, config) {
 function resolvePath(url, baseurl, config) {
     let result=resolveUrl(url, baseurl, config);
     if (result) {
-        return path.relative(process.cwd(), result).replace(/\\/g, '/');
+        return path.relative(cwd, result).replace(/\\/g, '/');
     }
     return null;
 }
@@ -291,7 +293,7 @@ function resolveUrl(url, baseurl, config) {
     if (baseurl) {
         dirname=path.dirname(baseurl);
     } else {
-        dirname=process.cwd();
+        dirname=cwd;
     }
 
     // alias
@@ -304,7 +306,7 @@ function resolveUrl(url, baseurl, config) {
             result = path.resolve(dirname, url);
         } else {
             // cwd路径
-            result=path.resolve(process.cwd(), 'node_modules', url);
+            result=path.resolve(cwd, 'node_modules', url);
         }
     }
     return result;
@@ -313,7 +315,7 @@ function resolveUrl(url, baseurl, config) {
 function importPath(url, baseurl, config) {
     let real = importUrl(url, baseurl, config);
     if (real)  {
-        return path.relative(process.cwd(), real).replace(/\\/g, '/');
+        return path.relative(cwd, real).replace(/\\/g, '/');
     }
     return null;
 }
@@ -368,9 +370,9 @@ function sourceCode(url, baseurl, config) {
 function readPkg(name) {
     let pkgPath;
     if (name) {
-        pkgPath=path.resolve(process.cwd(), './node_modules/', name, 'package.json');
+        pkgPath=path.resolve(cwd, './node_modules/', name, 'package.json');
     } else {
-        pkgPath=path.resolve(process.cwd(), 'package.json');
+        pkgPath=path.resolve(cwd, 'package.json');
     }
     return JSON.parse(fs.readFileSync(pkgPath));// 不缓存
 }
@@ -379,10 +381,10 @@ function writePkg(name, json) {
     let pkgPath;
     let data=json;
     if (arguments.length>=2) {
-        pkgPath=path.resolve(process.cwd(), './node_modules/', name, 'package.json');
+        pkgPath=path.resolve(cwd, './node_modules/', name, 'package.json');
     } else if(arguments.length==1) {
         data=name;
-        pkgPath=path.resolve(process.cwd(), 'package.json');
+        pkgPath=path.resolve(cwd, 'package.json');
     } else {
         return;
     }
@@ -393,7 +395,7 @@ function compile(code, plugin) {
     let babelrc_path;
     let babelrc = {};
     try {
-        babelrc_path = path.resolve(process.cwd(), './.babelrc');
+        babelrc_path = path.resolve(cwd, './.babelrc');
         let json = fs.readFileSync(babelrc_path);
         json = json.toString();
         babelrc = eval('(' + json + ')');
@@ -516,7 +518,7 @@ function declaration(node) {
 
 function webpackConfig() {
     try {
-        let configPath=path.resolve(process.cwd(), 'build/webpack.base.conf.js');
+        let configPath=path.resolve(cwd, 'build/webpack.base.conf.js');
         return require(configPath);
     } catch (e) {
 

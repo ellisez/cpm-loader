@@ -8,5 +8,8 @@
   "dependencies": {
     "babel-core": "^6.26.3",
     "vue-template-compiler": "^2.5.2"
+  },
+  "devDependencies": {
+    "tapable": "^1.1.3"
   }
 }

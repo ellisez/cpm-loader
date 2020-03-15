@@ -7,7 +7,7 @@ module.exports=function (content) {
     const resourcePath=this.resourcePath;
     const code=loader(resourcePath, content, {
         updateComponent(data) {
-            self._compiler.applyPlugins('cpm-component', data);
+            self._compiler.hooks.CpmComponent.call(data);
         }
     });
     return code;

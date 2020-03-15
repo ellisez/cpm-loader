@@ -3,6 +3,8 @@ const path=require('path');
 const utils=require('../lib/utils');
 const compiler=require('../lib/compiler');
 
+const cwd=process.env.CPM_DIRECTOR || process.cwd();
+
 function configForComponent(directive, config) {debugger;
     directive.directives.some(function (item) {
         if (item.name==='component') {
@@ -68,7 +70,6 @@ function configForBlock(directive, config) {
 }
 
 module.exports=function (file, {directive, parentConfig}) {
-    const cwd=process.cwd();
 
     const filePath=path.relative(cwd, file);
 
