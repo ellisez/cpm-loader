@@ -5,7 +5,7 @@ const compiler=require('../lib/compiler');
 
 const cwd=process.env.CPM_DIRECTOR || process.cwd();
 
-function configForComponent(directive, config) {debugger;
+function configForComponent(directive, config) {
     directive.directives.some(function (item) {
         if (item.name==='component') {
             const [from, to]=item.params;
@@ -70,7 +70,7 @@ function configForBlock(directive, config) {
 }
 
 module.exports=function (file, {directive, parentConfig}) {
-
+    const self=this;
     const filePath=path.relative(cwd, file);
 
     if (!directive.params || directive.params.length==0) {
@@ -120,7 +120,7 @@ module.exports=function (file, {directive, parentConfig}) {
             }
         });
 
-        const result=compiler(url, code, config);
+        const result=compiler.call(self, url, code, config);
         code=result.code;
 
         return code;
