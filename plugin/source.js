@@ -31,8 +31,9 @@ function configForComponent(directive, config) {
 }
 
 function configForBlock(directive, config) {
+    const self=this;
     if (directive.block) {
-        utils.babelCompile(directive.block, function jsPlugin({types}) {
+        function jsPlugin({types}) {
             function jsBlock(nodepath) {
                 if (nodepath.parentPath==null || nodepath.parentPath.parentPath==null) {
                     // 只匹配根部声明的变量
@@ -64,8 +65,13 @@ function configForBlock(directive, config) {
                     }
                 }
             }
-        })
+        }
 
+        const options={
+            filename: self.resource,
+            plugins:[jsPlugin]
+        };
+        utils.babelCompile(directive.block, options);
     }
 }
 
@@ -78,7 +84,7 @@ module.exports=function (file, {directive, parentConfig}) {
     }
 
     let rawUrl = directive.params[0];
-    let url=utils.realPath(rawUrl);
+    let url=utils.resolvePath(self, rawUrl);
     if (fs.existsSync(url)) {
         let content=fs.readFileSync(url).toString();
         const config={};
@@ -100,7 +106,7 @@ module.exports=function (file, {directive, parentConfig}) {
         }
 
         // 解析block
-        configForBlock(directive, config);
+        configForBlock.call(self, directive, config);
 
         if (!content) {
             return;
